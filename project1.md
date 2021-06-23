@@ -187,9 +187,10 @@ $ vim /var/www/projectlamp/index.php
 
 This opened a blank file. Added the following text, which is valid PHP code, inside the file:
 
+```php
 <?php
 phpinfo();
-
+```
 saved and closed the file, refreshed the public IP address I pasted on the browser then got this reuslt:  
 
 ![php file](https://user-images.githubusercontent.com/85954096/123139155-84136080-d41b-11eb-8f31-c6bce6d19aec.jpg)
@@ -204,6 +205,4 @@ This page can always be recreated if needed to access the information again late
 
 Thanks.
 
-```php
-# write the code here
-```
+
