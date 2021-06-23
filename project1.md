@@ -194,6 +194,12 @@ saved and closed the file, refreshed the public IP address I pasted on the brows
 
 ![php file](https://user-images.githubusercontent.com/85954096/123139155-84136080-d41b-11eb-8f31-c6bce6d19aec.jpg)
 
+This page provides information about our server from the perspective of PHP. It is useful for debugging and to ensure that my settings are being applied correctly.
 
+It’s best to remove the file created as it contains sensitive information about PHP environment and our Ubuntu server. used rm to do so:
+
+$ sudo rm /var/www/projectlamp/index.php
+
+This page can always be recreated if needed to access the information again later.
 
 
