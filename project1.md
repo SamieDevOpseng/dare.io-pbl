@@ -203,3 +203,7 @@ $ sudo rm /var/www/projectlamp/index.php
 This page can always be recreated if needed to access the information again later.
 
 Thanks.
+
+```php
+# write the code here
+```
