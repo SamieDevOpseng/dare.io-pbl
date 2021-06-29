@@ -34,3 +34,4 @@ So I tested my Nginx server if responding to requests from the Internet. Opened 
 http://54.86.187.142/:80 and the result was this below;
 
 ![proj _2](https://user-images.githubusercontent.com/85954096/123867498-0e643480-d8f4-11eb-8649-5ec6ee154ba3.jpg)
+
