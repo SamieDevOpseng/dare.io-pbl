@@ -112,7 +112,7 @@ $ sudo nano /etc/nginx/sites-available/projectLEMP
 
 A new blank file was created with the command-line editor used above, then Pasted the following bare-bones configuration:
 
-
+```
 #/etc/nginx/sites-available/projectLEMP
 
 server {
@@ -136,7 +136,7 @@ server {
     }
 
 }
-
+```
 
 Here’s what each of these directives and location blocks does:
 
@@ -195,3 +195,34 @@ MyLEMP stack is now fully configured.
 
 ## Step 5 – Testing PHP with Nginx
 
+Now that my LAMP stack is completely installed and fully operational.
+
+I will need to validate that Nginx can correctly handle .php files off to the PHP processor.
+
+I created a test PHP file in my document root. Openned a new file called info.php within the document root in my text editor, I ran:
+
+$ nano /var/www/projectLEMP/info.php
+
+I pasted the following lines into the new file. This is valid PHP code that will return information about the server:
+
+```php
+<?php
+phpinfo();
+```
+
+I openned my web browser by visiting the public IP address I’ve set up in your Nginx configuration file, followed by /info.php:
+
+http://54.157.165.233/info.php
+
+Got this result;
+
+![php](https://user-images.githubusercontent.com/85954096/124030743-1b4c5b00-d9bc-11eb-9f25-613580914df5.jpg)
+
+After checking the relevant information about the PHP server through the page, It’s best to remove the file created 
+as it contains sensitive information about the PHP environment and the Ubuntu server. I used ***rm*** to remove the  file:
+
+$ sudo rm /var/www/your_domain/info.php
+
+This file can always be regenerated if needed later.
+
+## Step 6 — Retrieving data from MySQL database with PHP
