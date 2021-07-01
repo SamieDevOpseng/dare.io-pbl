@@ -226,3 +226,101 @@ $ sudo rm /var/www/your_domain/info.php
 This file can always be regenerated if needed later.
 
 ## Step 6 — Retrieving data from MySQL database with PHP
+
+I be creating a test database (DB) with “To do list” and configured access to it, so the Nginx website would be able to query data from the DB and display it.
+
+The native MySQL PHP library ***mysqlnd*** doesn’t support ***caching_sha2_authentication***, the default authentication method for MySQL 8. I'll need to create a new user with the ***mysql_native_password*** authentication method in order to be able to connect to the MySQL database from PHP.
+
+I'll create a database named example_database and a user named samuel_user.
+
+I connected to the MySQL console using the root account, ran:
+
+$ sudo mysql
+
+To create a new database, I ran the following command from the MySQL console:
+
+mysql> CREATE DATABASE `example_database`;
+
+I created a new user named ***samuel_user***, using ***mysql_native_password*** as default authentication method and user’s password as ***samuel***, with the following command.
+
+mysql>  CREATE USER 'samuel_user'@'%' IDENTIFIED WITH mysql_native_password BY 'samuel';
+
+I gave this user permission over the example_database database:
+
+mysql> GRANT ALL ON example_database.* TO 'samuel_user'@'%';
+
+Exit the MySQL shell with:
+
+mysql> exit
+
+I tested if the new user has the proper permissions by logging in to the MySQL console again, with different custom user credentials:
+
+$ mysql -u samuel_user -p
+
+The -p flag in this command will prompt the password used when creating the samuel_user user. After logging in to the MySQL console with the password created, I was granted access to the example_database database: following this commamd
+
+mysql> SHOW DATABASES;
+
+The output was this;
+
+![showcase database](https://user-images.githubusercontent.com/85954096/124167431-9fa8e780-da69-11eb-8890-3cae79277f4d.jpg)
+
+Now created a test table named todo_list. From the MySQL console, I ran the following statement:
+
+CREATE TABLE example_database.todo_list (item_id INT AUTO_INCREMENT, content VARCHAR(255), PRIMARY KEY(item_id));
+
+Inserting a few rows of content in the test table. I repeated the next command a few times, using different VALUES:
+
+mysql> INSERT INTO example_database.todo_list (content) VALUES ("My first important item");
+
+To confirm that the data was successfully saved to your table, run:
+
+mysql>  SELECT * FROM example_database.todo_list;
+
+After confirming that I have valid data in your test table, I exited the MySQL console:
+
+mysql> exit
+
+Now I created a PHP script that will connect to MySQL and query for your content. I Created a new PHP file in the custom web root directory using my preferred editor.
+
+$ vi /var/www/projectLEMP/todo_list.php
+
+The following PHP script connects to the MySQL database and queries for the content of the todo_list table, displays the results
+in a list. If there is a problem with the database connection, it will throw an exception.
+
+Copied this content into my todo_list.php script:
+
+```
+<?php
+$user = "example_user";
+$password = "password";
+$database = "example_database";
+$table = "todo_list";
+
+try {
+  $db = new PDO("mysql:host=localhost;dbname=$database", $user, $password);
+  echo "<h2>TODO</h2><ol>";
+  foreach($db->query("SELECT content FROM $table") as $row) {
+    echo "<li>" . $row['content'] . "</li>";
+  }
+  echo "</ol>";
+} catch (PDOException $e) {
+    print "Error!: " . $e->getMessage() . "<br/>";
+    die();
+}
+```
+
+Saved and closed, ran:
+
+$ esc :wq! enter
+
+I opened my web browser by visiting public IP address configured for my website, followed by /todo_list.php:
+
+http://54.86.187.142/todo_list.php
+
+Got this out;
+
+![todo list](https://user-images.githubusercontent.com/85954096/124171672-79d21180-da6e-11eb-8bf6-d0cc9ccb040e.jpg)
+
+
+That shows my PHP environment is ready to connected and interacting with the MySQL server.
