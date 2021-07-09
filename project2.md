@@ -4,7 +4,9 @@
 
 Being able to display web pages to our site visitors, I employed Nginx a high-performance web server. I used the apt package manager to install this package Nginx.
 
-I updating my server’s package index since this is the first of using ***apt*** for this project. I used apt install to get Nginx installed: using these commands
+I opened my terminal
+
+I updated my server’s package index since this is the first of using ***apt*** for this project. I used apt install to get Nginx installed: using these commands
 
 $ sudo apt update
 $ sudo apt install nginx
