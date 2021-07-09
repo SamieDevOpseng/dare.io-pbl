@@ -17,6 +17,8 @@ I signned into my intance using my AWS account and access my terminal through Mo
 
 ### Step 1 — Installing Apache and Updating the Firewall
 
+Opened my terminal
+
 To update a list of packages in package manager
 
 I used command prompt $ sudo apt update
