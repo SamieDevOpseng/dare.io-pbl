@@ -326,3 +326,471 @@ console.log(`Server running on port ${port}`)
 });
 ```
 
+Using environment variables to store information is considered more secure and best practice to separate configuration and secret data from the application, instead of writing connection strings directly inside the ***index.js*** application file.
+
+I Started the server using the command below:
+
+node index.js
+
+When I was trying to restart the node index.js I encounted an Error: see below
+
+![adrinuse](https://user-images.githubusercontent.com/85954096/125221761-5c7f1d80-e28e-11eb-882f-b11c48b03522.jpg)
+
+So I had to go on google to know the cause of the error with the search word "nodejs listen eaddrinuse address already in use", I got a recent link to the solution, see below:
+
+https://levelup.gitconnected.com/how-to-kill-server-when-seeing-eaddrinuse-address-already-in-use-16c4c4d7fe5d
+
+### THE PROMBLE
+
+When trying to restart a Node application, the previous one did not shut down properly, and you may see a “listen EADDRINUSE: address already in use”.
+
+### SOLUTION
+
+When this EADDRINUSE issue has already happened, In order to resolve it, you need to kill the process manually. In order to do 
+that, you need to find the process id (PID) of the process. You know the process is occupying a particular port on your machine 
+or server.
+
+I used the command prompt to look for the process ID of the process, I ran:
+
+lsof -i tcp:5000
+
+Then killed the process completely with the process id number, I ran:
+
+kill -9 3100
+
+see result below:
+
+![solution](https://user-images.githubusercontent.com/85954096/125223578-9ef62980-e291-11eb-8898-fad164a6f8ce.jpg)
+
+Then successfully restart my node index.js, i used:
+
+node index.js
+
+Testing Backend Code without Frontend using Restful API
+
+So the To-Do application backend part has been written and configured a database, but the frontend UI has not been configured yet. 
+needed ReactJS code to achieve that. But during development, I needed a way to test the code using RESTfulL API. 
+Therefore, so used some API development client to test the code which was Postman.
+
+
+Tested all the API endpoints and made sure they are working. For the endpoints that require body, I sent JSON back with the necessary fields since it’s what I setup in the code.
+
+I opened Postman, created a POST request to the API with IP address http://3.238.192.245:5000/api/todos. This request sends a new task to To-Do list so the application could store it in the database.
+
+I made sure I set header key  to Content-Type as application/json
+
+Created a GET request to the API on http://3.238.192.245:5000/api/todos. This request retrieves all existing records 
+from out To-do application (backend requests these records from the database and sends it back as a response to GET request).
+
+### STEP 2 – FRONTEND CREATION
+
+After successfully done with the functionality I wanted from backend and API, I now created a user interface for a Web client (browser) to interact with the application via API. To start with the frontend of the To-do app, I used the create-react-app command to scaffold the app.
+
+In the same root directory as the backend code, which is the Todo directory, i ran:
+
+npx create-react-app client
+
+This created a new folder in Todo directory called client, where I added all the react code.
+
+#### Running a React App
+
+Before testing the react app, there are some dependencies that need to be installed.
+
+I Installed concurrently. It is used to run more than one command simultaneously from the same terminal window.
+
+npm install concurrently --save-dev
+
+I Installed nodemon. It is used to run and monitor the server. If there is any change in the server code, nodemon will restart it automatically and load the new changes.
+
+npm install nodemon --save-dev
+
+I opened the package.json file in Todo folder. Changed the scripts code to new one below: 
+
+```
+"scripts": {
+"start": "node index.js",
+"start-watch": "nodemon index.js",
+"dev": "concurrently \"npm run start-watch\" \"cd client && npm start\""
+},
+```
+
+#### Configure Proxy in package.json
+
+I Changed directory to ‘client’
+
+cd client
+
+I Opend the package.json file
+
+vi package.json
+
+Added the key value pair in the package.json file "proxy": "http://localhost:5000".
+
+The whole purpose of adding the proxy configuration in number 3 above is to make it possible to access the application directly 
+from the browser by simply calling the server url like http://localhost:5000 rather than always including the entire path like http://localhost:5000/api/todos
+
+npm run dev
+
+In order to access the application from the Internet i opened TCP port 3000 on EC2 by adding a new Security Group rule.
+
+#### Creating your React Components
+
+One of the advantages of react is that it makes use of components, which are reusable and also makes code modular. For Todo app, there will be two stateful components and one stateless component.
+
+From your Todo directory, I ran:
+
+cd client
+
+moved to the src directory
+
+cd src
+
+Insided ***src folder*** I created another folder called components
+
+mkdir components
+
+Moved into the components directory with
+
+cd components
+
+Inside ‘components’ directory i created three files Input.js, ListTodo.js and Todo.js.
+
+touch Input.js ListTodo.js Todo.js
+
+Opened Input.js file
+
+vi Input.js
+
+Copied and pasted the following:
+
+```
+import React, { Component } from 'react';
+import axios from 'axios';
+
+class Input extends Component {
+
+state = {
+action: ""
+}
+
+addTodo = () => {
+const task = {action: this.state.action}
+
+    if(task.action && task.action.length > 0){
+      axios.post('/api/todos', task)
+        .then(res => {
+          if(res.data){
+            this.props.getTodos();
+            this.setState({action: ""})
+          }
+        })
+        .catch(err => console.log(err))
+    }else {
+      console.log('input field required')
+    }
+
+}
+
+handleChange = (e) => {
+this.setState({
+action: e.target.value
+})
+}
+
+render() {
+let { action } = this.state;
+return (
+<div>
+<input type="text" onChange={this.handleChange} value={action} />
+<button onClick={this.addTodo}>add todo</button>
+</div>
+)
+}
+}
+
+export default Input
+```
+
+To make use of Axios, which is a Promise based HTTP client for the browser and node.js, I took some steps back using cd .. into client from 
+on my terminal and ran npm install axios.
+
+Move to the src folder
+
+cd ..
+
+Move to clients folder
+
+cd ..
+
+Install Axios
+
+npm install axios
+
+Go to ‘components’ directory
+
+cd src/components
+
+After that opened ListTodo.js
+
+vi ListTodo.js
+
+in the ListTodo.js copied and pasted the following code:
+
+```
+import React from 'react';
+
+const ListTodo = ({ todos, deleteTodo }) => {
+
+return (
+<ul>
+{
+todos &&
+todos.length > 0 ?
+(
+todos.map(todo => {
+return (
+<li key={todo._id} onClick={() => deleteTodo(todo._id)}>{todo.action}</li>
+)
+})
+)
+:
+(
+<li>No todo(s) left</li>
+)
+}
+</ul>
+)
+}
+
+export default ListTodo
+```
+
+Then in Todo.js file i wrote the following code:
+
+```
+import React, {Component} from 'react';
+import axios from 'axios';
+
+import Input from './Input';
+import ListTodo from './ListTodo';
+
+class Todo extends Component {
+
+state = {
+todos: []
+}
+
+componentDidMount(){
+this.getTodos();
+}
+
+getTodos = () => {
+axios.get('/api/todos')
+.then(res => {
+if(res.data){
+this.setState({
+todos: res.data
+})
+}
+})
+.catch(err => console.log(err))
+}
+
+deleteTodo = (id) => {
+
+    axios.delete(`/api/todos/${id}`)
+      .then(res => {
+        if(res.data){
+          this.getTodos()
+        }
+      })
+      .catch(err => console.log(err))
+
+}
+
+render() {
+let { todos } = this.state;
+
+    return(
+      <div>
+        <h1>My Todo(s)</h1>
+        <Input getTodos={this.getTodos}/>
+        <ListTodo todos={todos} deleteTodo={this.deleteTodo}/>
+      </div>
+    )
+
+}
+}
+
+export default Todo;
+```
+
+I made a little adjustment to the react code. I deleted the logo and adjusted App.js to look like this.
+
+Move to the src folder
+
+cd ..
+
+in the src folder, I ran:
+
+vi App.js
+
+Copied and pasted the code below into it
+
+```
+import React from 'react';
+
+import Todo from './components/Todo';
+import './App.css';
+
+const App = () => {
+return (
+<div className="App">
+<Todo />
+</div>
+);
+}
+
+export default App;
+```
+
+After pasting, exit the editor.
+
+In the src directory open the App.css
+
+vi App.css
+
+Then pasted the following code into App.css:
+
+```
+.App {
+text-align: center;
+font-size: calc(10px + 2vmin);
+width: 60%;
+margin-left: auto;
+margin-right: auto;
+}
+
+input {
+height: 40px;
+width: 50%;
+border: none;
+border-bottom: 2px #101113 solid;
+background: none;
+font-size: 1.5rem;
+color: #787a80;
+}
+
+input:focus {
+outline: none;
+}
+
+button {
+width: 25%;
+height: 45px;
+border: none;
+margin-left: 10px;
+font-size: 25px;
+background: #101113;
+border-radius: 5px;
+color: #787a80;
+cursor: pointer;
+}
+
+button:focus {
+outline: none;
+}
+
+ul {
+list-style: none;
+text-align: left;
+padding: 15px;
+background: #171a1f;
+border-radius: 5px;
+}
+
+li {
+padding: 15px;
+font-size: 1.5rem;
+margin-bottom: 15px;
+background: #282c34;
+border-radius: 5px;
+overflow-wrap: break-word;
+cursor: pointer;
+}
+
+@media only screen and (min-width: 300px) {
+.App {
+width: 80%;
+}
+
+input {
+width: 100%
+}
+
+button {
+width: 100%;
+margin-top: 15px;
+margin-left: 0;
+}
+}
+
+@media only screen and (min-width: 640px) {
+.App {
+width: 60%;
+}
+
+input {
+width: 50%;
+}
+
+button {
+width: 30%;
+margin-left: 10px;
+margin-top: 0;
+}
+}
+```
+esc :wq! to Exit
+
+In the src directory open the index.css
+
+vim index.css
+
+Copied and pasted the code below:
+
+```
+body {
+margin: 0;
+padding: 0;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+"Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+sans-serif;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+box-sizing: border-box;
+background-color: #282c34;
+color: #787a80;
+}
+
+code {
+font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+monospace;
+}
+```
+
+Go to the Todo directory
+
+cd ../..
+
+When you are in the Todo directory run:
+
+npm run dev
+
+Got this result
+
+![port 3000](https://user-images.githubusercontent.com/85954096/125230997-855bde80-e29f-11eb-9592-9f1896604f8d.jpg)
+
+In this Project #3 I created a simple To-Do and deployed it to MERN stack. I wrote a frontend application using React.js that communicates with a backend application written using Expressjs. I created a Mongodb backend for storing tasks in a database.
+
+### MERN PROJECT COMPLETED
