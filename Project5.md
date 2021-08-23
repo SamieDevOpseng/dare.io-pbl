@@ -47,6 +47,8 @@ On the Second server I installed MYSQL Client by running the command;
 
 *sudo apt install mysql-client -y*
 
+
+
 Before configuring MySQL server to allow connections from remote hosts, I needed to run the security script since i just have the mysql installed and running no database, no user and the table. So, running the security scipt on mysql server I ran;
 
 *sudo mysql_secure_installation*
