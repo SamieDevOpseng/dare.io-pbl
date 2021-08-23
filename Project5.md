@@ -18,7 +18,7 @@ If we extend this concept further and add a Database Server to our architecture,
 
 In this case, our Web Server has a role of a "Client" that connects and reads/writes to/from a Database (DB) Server (MySQL, MongoDB, Oracle, SQL Server or any other), and the communication between them happens over a Local Network (it can also be Internet connection, but it is a common practice to place Web Server and DB Server close to each other in local network).
 
-## IMPLEMENT A CLIENT SERVER ARCHITECTURE USING MYSQL DATABASE MANAGEMENT SYSTEM (DBMS)
+### IMPLEMENT A CLIENT SERVER ARCHITECTURE USING MYSQL DATABASE MANAGEMENT SYSTEM (DBMS)
 
 To demonstrate a basic client-server using MySQL Relational Database Management System (RDBMS).
 
@@ -73,9 +73,32 @@ sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
 
 To save and exit, I ran;
 
-esc :wqa!
+*esc :wqa!*
 
 ![replace](https://user-images.githubusercontent.com/85954096/130512635-342d80c9-58f3-40f6-95d0-20e65d7b77ae.jpg)
+
+Restart mysql, I ran the command;
+
+*sudo systemctl restart mysql*
+
+From mysql client Linux Server connecting remotely to mysql server Database Engine without using SSH. 
+
+On my mysql client Linux server I ran the command below to coonect to mysql server;
+
+*sudo mysql -u remote_user -h 172.31.46.215 -p*
+
+The -p after the private IP address means password prompt, so i entered the password after running command.
+
+### Check that you have successfully connected to a remote MySQL server and can perform SQL queries:
+
+I ran the command below to check if i had successfully connected
+
+mysql: show datebases;
+
+Then i got this result
+
+![client to db server](https://user-images.githubusercontent.com/85954096/130527982-9cb307b8-8109-4d15-a95b-c4dba548b034.jpg)
+
 
 
 
