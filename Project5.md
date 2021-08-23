@@ -65,4 +65,17 @@ After setting the password and completing the interactive session I ran command 
 
 *mysql: FLUSH PRIVILEGES;*
 
+*mysql: exit*
+
+Configuring MySQL server to allow connections from remote hosts, Openning vi text edited and replace the bind address ‘127.0.0.1’ to ‘0.0.0.0’; I ran;
+
+sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+
+To save and exit, I ran;
+
+esc :wqa!
+
+![replace](https://user-images.githubusercontent.com/85954096/130512635-342d80c9-58f3-40f6-95d0-20e65d7b77ae.jpg)
+
+
 
