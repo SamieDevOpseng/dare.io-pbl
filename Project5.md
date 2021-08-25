@@ -47,6 +47,15 @@ On the Second server I installed MYSQL Client by running the command;
 
 *sudo apt install mysql-client -y*
 
+By default, both EC2 virtual servers are located in the same local virtual network, so they can communicate to each 
+other using local IP addresses. Using mysql server's local IP address to connect from mysql client. MySQL server uses TCP port 
+3306 by default, so I have to opened it by creating a new entry in ‘Inbound rules’ in ‘mysql server’ Security Groups. 
+For extra security, I do not allow all IP addresses to reach your ‘mysql server’ – so I allowed access only to the specific local IP 
+address of ‘mysql client’.
+
+How I created new entry in 'Inbound rules' in mysql server shown below; 
+
+![Screenshot 2021-08-25 112328](https://user-images.githubusercontent.com/85954096/130828821-5b0e6a14-3c87-4b97-adf4-07af8b01348a.jpg)
 
 
 Before configuring MySQL server to allow connections from remote hosts, I needed to run the security script since i just have the mysql installed and running no database, no user and the table. So, running the security scipt on mysql server I ran;
